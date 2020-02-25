@@ -1,0 +1,30 @@
+management:
+  endpoint:
+    gateway:
+      enabled: false
+    refresh:
+      enabled: false
+    pause:
+      enabled: false
+    restart:
+      enabled: false
+    resume:
+      enabled: false
+    service-registry:
+      enabled: false
+    features:
+      enabled: false
+    env:
+      post:
+        enabled: false
+  health:
+    refresh:
+      enabled: false
+spring:
+  cloud:
+    service-registry:
+      auto-registration:
+        register-management: false
+api:
+  doc:
+    gitUrl: https://gitlab.com/shaojunxiao/ApiBlueprintDemo-master.git

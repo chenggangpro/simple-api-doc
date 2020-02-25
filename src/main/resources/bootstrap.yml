@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: default
+  application:
+    name: simple-api-doc
+  flyway:
+    enabled: false
+logging:
+  level:
+    org.springframework: INFO
+    pro.chenggang: DEBUG
+  file:
+    path: ./logs/${spring.application.name}
+server:
+  port: 9001
