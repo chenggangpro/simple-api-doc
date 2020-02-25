@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: default
   application:
     name: simple-api-doc
   flyway:

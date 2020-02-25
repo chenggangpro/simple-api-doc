@@ -17,7 +17,7 @@ public class SystemControl implements SmartInitializingSingleton {
 
     private final ApiService apiService;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRateString = "#{@apiSystemProperties.refreshRate}")
     public void execApiDoc(){
         apiService.generateHtml();
     }

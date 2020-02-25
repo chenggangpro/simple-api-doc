@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author: chenggang
  * @date 2020-02-25.
@@ -36,4 +38,9 @@ public class ApiSystemProperties {
      * password
      */
     private String gitPassword;
+    /**
+     * refresh rate (default 1 minute)
+     */
+    private Long refreshRate = TimeUnit.MILLISECONDS.convert(1,TimeUnit.MINUTES);
+
 }

@@ -11,5 +11,8 @@ public interface ApiService {
      */
     void generateHtml();
 
+    /**
+     * exec api mock server
+     */
     void execApiMockSupport();
 }

@@ -33,7 +33,7 @@ public class SystemConfiguration {
 
     @ConfigurationProperties(prefix = ApiSystemProperties.PREFIX)
     @Bean
-    public ApiSystemProperties systemProperties(){
+    public ApiSystemProperties apiSystemProperties(){
         return new ApiSystemProperties();
     }
 
