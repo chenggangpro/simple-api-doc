@@ -18,6 +18,7 @@ import pro.chenggang.project.simpleapidoc.properties.ApiSystemProperties;
 import java.io.File;
 import java.io.IOException;
 
+import static pro.chenggang.project.simpleapidoc.properties.ApiSystemProperties.API_HTML_DIR_NAME;
 import static pro.chenggang.project.simpleapidoc.properties.ApiSystemProperties.API_REPOSITORY_DIR_NAME;
 
 /**
@@ -44,9 +45,9 @@ public class SystemConfiguration {
             Git git;
             if(file.exists()){
                 git = Git.open(file);
-                git.checkout();
-                git.clean();
-                git.pull();
+                git.checkout().setName(apiSystemProperties.getGitBranch()).call();
+                git.clean().call();
+                git.pull().call();
             }else{
                 file.mkdirs();
                 CloneCommand cloneCommand = Git.cloneRepository()
@@ -70,5 +71,21 @@ public class SystemConfiguration {
             log.error("Git API Exception,Message:{}",e.getMessage());
         }
         throw new UnsupportedOperationException("Can Not Load Api Repository ,Please Check Git Settings");
+    }
+
+    @Bean
+    public File repositoryFile(ApiSystemProperties apiSystemProperties){
+        String apiLocation = apiSystemProperties.getLocation() + API_REPOSITORY_DIR_NAME + "/";
+        return new File(apiLocation);
+    }
+
+    @Bean
+    public File htmlFile(ApiSystemProperties apiSystemProperties){
+        String apiLocation = apiSystemProperties.getLocation() + API_HTML_DIR_NAME + "/";
+        File file =  new File(apiLocation);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        return file;
     }
 }
