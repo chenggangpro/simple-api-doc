@@ -28,3 +28,4 @@ spring:
 api:
   doc:
     gitUrl: https://gitlab.com/shaojunxiao/ApiBlueprintDemo-master.git
+    location:

@@ -25,3 +25,16 @@ spring:
     service-registry:
       auto-registration:
         register-management: false
+#    gateway:
+#      routes:
+#        - id: api-file
+#          uri: forward:/doc/**
+#          predicates:
+#            - Path=/doc/**
+
+      metrics:
+        enabled: false
+  webflux:
+    static-path-pattern: /doc/**
+  resources:
+    static-locations: /Users/evans/GitHub/simple-api-doc/api-html/

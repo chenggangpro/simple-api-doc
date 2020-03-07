@@ -21,7 +21,9 @@ public class ApiSystemProperties {
 
     public static final String API_HTML_DIR_NAME = "api-html";
 
-    private String location = "./";
+    public static final String API_MOCK_DIR_NAME = "api-mock";
+
+    private String location = "/Users/evans/GitHub/simple-api-doc/";
     /**
      * git url
      */

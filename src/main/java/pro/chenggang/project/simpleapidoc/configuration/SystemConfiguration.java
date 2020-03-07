@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static pro.chenggang.project.simpleapidoc.properties.ApiSystemProperties.API_HTML_DIR_NAME;
+import static pro.chenggang.project.simpleapidoc.properties.ApiSystemProperties.API_MOCK_DIR_NAME;
 import static pro.chenggang.project.simpleapidoc.properties.ApiSystemProperties.API_REPOSITORY_DIR_NAME;
 
 /**
@@ -83,6 +84,16 @@ public class SystemConfiguration {
     public File htmlFile(ApiSystemProperties apiSystemProperties){
         String apiLocation = apiSystemProperties.getLocation() + API_HTML_DIR_NAME + "/";
         File file =  new File(apiLocation);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        return file;
+    }
+
+    @Bean
+    public File mockFile(ApiSystemProperties apiSystemProperties){
+        String mockLocation = apiSystemProperties.getLocation() + API_MOCK_DIR_NAME + "/";
+        File file =  new File(mockLocation);
         if(!file.exists()){
             file.mkdirs();
         }

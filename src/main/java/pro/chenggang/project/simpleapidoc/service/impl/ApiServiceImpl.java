@@ -10,15 +10,18 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.FetchResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import pro.chenggang.project.simpleapidoc.properties.ApiSystemProperties;
 import pro.chenggang.project.simpleapidoc.service.ApiService;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static pro.chenggang.project.simpleapidoc.properties.ApiSystemProperties.API_HTML_DIR_NAME;
+import static pro.chenggang.project.simpleapidoc.properties.ApiSystemProperties.API_MOCK_DIR_NAME;
 import static pro.chenggang.project.simpleapidoc.properties.ApiSystemProperties.API_REPOSITORY_DIR_NAME;
 
 /**
@@ -42,6 +46,7 @@ public class ApiServiceImpl implements ApiService {
     private final Git git;
     private final File htmlFile;
     private final File repositoryFile;
+    private final File mockFile;
 
     @Override
     public void generateHtml() {
@@ -77,9 +82,7 @@ public class ApiServiceImpl implements ApiService {
             return;
         }
         if(!apibFiles.isEmpty()){
-            apibFiles.forEach(item->{
-                log.info("Load Apib File :{}",item.getPath());
-            });
+            apibFiles.forEach(item-> log.info("Load Apib File :{}",item.getPath()));
         }
         apibFiles.forEach(item->{
             String path = item.getPath();
@@ -87,11 +90,16 @@ public class ApiServiceImpl implements ApiService {
             String command = "aglio --theme-full-width -i " + path + " -o " + targetHtmlFileName;
             this.execCommand(command,true);
             log.info("Generate HTML :{}",targetHtmlFileName);
+            try {
+                FileCopyUtils.copy(item,new File(path.replace(API_REPOSITORY_DIR_NAME, API_MOCK_DIR_NAME)));
+            } catch (IOException e) {
+                log.error("Copy Mock Server Apib File Error ,Message:{}",e.getMessage());
+            }
         });
     }
 
     private List<File> getFilesBySuffix(File parentFile,String suffix){
-        File[] listFiles = parentFile.listFiles((file, name) -> name.endsWith(suffix));
+        File[] listFiles = parentFile.listFiles();
         if(Objects.isNull(listFiles) || listFiles.length ==0){
             return Collections.emptyList();
         }
@@ -100,7 +108,10 @@ public class ApiServiceImpl implements ApiService {
                     if(item.isDirectory()){
                         return getFilesBySuffix(item,suffix);
                     }
-                    return Collections.singletonList(item);
+                    if(item.getName().endsWith(suffix)){
+                        return Collections.singletonList(item);
+                    }
+                    return new ArrayList<File>(0);
                 })
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -109,8 +120,11 @@ public class ApiServiceImpl implements ApiService {
     @Async
     @Override
     public void execApiMockSupport(){
-        String apiLocation = apiSystemProperties.getLocation() + API_HTML_DIR_NAME;
-        String command = "drakov -f "+apiLocation+"/*.apib -p 3000 --stealthmode --public --watch ";
+        List<File> mockFiles = getFilesBySuffix(mockFile,".apib");
+        String mockFilePaths = mockFiles.stream()
+                .map(File::getPath)
+                .collect(Collectors.joining(" "));
+        String command = "drakov -f "+mockFilePaths+" -p 3000 --stealthmode --public --watch ";
         this.execCommand(command,true);
     }
 
