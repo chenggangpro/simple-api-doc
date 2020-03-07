@@ -9,5 +9,4 @@ public class SimpleApiDocApplication {
     public static void main(String[] args) {
         SpringApplication.run(SimpleApiDocApplication.class, args);
     }
-
 }
